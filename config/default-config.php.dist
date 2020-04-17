@@ -10,11 +10,13 @@
  * control, so do not include passwords or other sensitive information in this
  * file.
  */
+ 
+ use Monolog\Logger;
 
 $config = [
     //Application configuration
     "debug_mode" => false,
-    "locale_default" => "en_GB",
+    "locale_default" => "en_GB"
     //Database configuration
     "connection_options" => [
         "default" => [
@@ -44,7 +46,7 @@ $config = [
     "default_css" => [],
     //Logger configuration
     "logger_options" => [
-        "log_level" => \Configs\LoggerConfig::ERROR
+        "log_level" => Logger::ERROR
     ],
     //PhpFastCache configuration (Fallback drivers are set automatically!)
     "cache_options" => [
