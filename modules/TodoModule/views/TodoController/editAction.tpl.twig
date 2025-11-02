@@ -1,0 +1,95 @@
+{% extends "layout.default.body.tpl.twig" %}
+
+{% block page_content %}
+<div class="fade-in">
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+            <div class="card">
+                <div class="card-header">
+                    <i class="cil-pencil"></i> Edit Todo
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="?module=todoModule&controller=todo&action=edit&id={{ todo.id }}">
+                        <div class="form-group">
+                            <label for="title">Title <span class="text-danger">*</span></label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="title" 
+                                   name="title" 
+                                   value="{{ todo.title }}"
+                                   required
+                                   autofocus>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea class="form-control" 
+                                      id="description" 
+                                      name="description" 
+                                      rows="4">{{ todo.description }}</textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="priority">Priority</label>
+                                    <select class="form-control" id="priority" name="priority">
+                                        <option value="low" {{ todo.priority == 'low' ? 'selected' : '' }}>Low</option>
+                                        <option value="medium" {{ todo.priority == 'medium' ? 'selected' : '' }}>Medium</option>
+                                        <option value="high" {{ todo.priority == 'high' ? 'selected' : '' }}>High</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="due_date">Due Date</label>
+                                    <input type="date" 
+                                           class="form-control" 
+                                           id="due_date" 
+                                           name="due_date"
+                                           value="{{ todo.dueDate ? todo.dueDate|date('Y-m-d') : '' }}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input type="checkbox" 
+                                   class="form-check-input" 
+                                   id="completed" 
+                                   name="completed"
+                                   {{ todo.completed ? 'checked' : '' }}>
+                            <label class="form-check-label" for="completed">
+                                Mark as completed
+                            </label>
+                        </div>
+
+                        <div class="form-group mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="cil-save"></i> Update Todo
+                            </button>
+                            <a href="?module=todoModule&controller=todo&action=index" 
+                               class="btn btn-secondary">
+                                <i class="cil-x"></i> Cancel
+                            </a>
+                            <a href="?module=todoModule&controller=todo&action=delete&id={{ todo.id }}" 
+                               class="btn btn-danger float-right"
+                               onclick="return confirm('Are you sure you want to delete this todo?')">
+                                <i class="cil-trash"></i> Delete
+                            </a>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-muted">
+                    <small>
+                        Created: {{ todo.createdAt|date('F d, Y \\a\\t H:i') }}<br>
+                        Last Updated: {{ todo.updatedAt|date('F d, Y \\a\\t H:i') }}
+                        {% if todo.completedAt %}
+                            <br>Completed: {{ todo.completedAt|date('F d, Y \\a\\t H:i') }}
+                        {% endif %}
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends "layout.default.body.tpl.twig" %}
+
+{% block page_content %}
+<div class="fade-in">
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+            <div class="card">
+                <div class="card-header">
+                    <i class="cil-plus"></i> Create New Todo
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="?module=todoModule&controller=todo&action=create">
+                        <div class="form-group">
+                            <label for="title">Title <span class="text-danger">*</span></label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="title" 
+                                   name="title" 
+                                   placeholder="Enter todo title"
+                                   required
+                                   autofocus>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea class="form-control" 
+                                      id="description" 
+                                      name="description" 
+                                      rows="4"
+                                      placeholder="Optional description"></textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="priority">Priority</label>
+                                    <select class="form-control" id="priority" name="priority">
+                                        <option value="low">Low</option>
+                                        <option value="medium" selected>Medium</option>
+                                        <option value="high">High</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="due_date">Due Date</label>
+                                    <input type="date" 
+                                           class="form-control" 
+                                           id="due_date" 
+                                           name="due_date">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="cil-save"></i> Create Todo
+                            </button>
+                            <a href="?module=todoModule&controller=todo&action=index" 
+                               class="btn btn-secondary">
+                                <i class="cil-x"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Help Card -->
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h6><i class="cil-info"></i> Tips</h6>
+                    <ul class="mb-0">
+                        <li>Use <strong>High</strong> priority for urgent tasks</li>
+                        <li>Set a due date to track deadlines</li>
+                        <li>Add detailed descriptions for complex todos</li>
+                        <li>You can edit or delete todos later</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
