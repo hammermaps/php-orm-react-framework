@@ -1,0 +1,154 @@
+{% extends "layout.default.body.tpl.twig" %}
+
+{% block page_content %}
+<div class="fade-in">
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-sm-6 col-lg-4">
+            <div class="card text-white bg-primary">
+                <div class="card-body pb-0">
+                    <div class="text-value-lg">{{ stats.total }}</div>
+                    <div>Total Todos</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-4">
+            <div class="card text-white bg-warning">
+                <div class="card-body pb-0">
+                    <div class="text-value-lg">{{ stats.incomplete }}</div>
+                    <div>Incomplete</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-4">
+            <div class="card text-white bg-danger">
+                <div class="card-body pb-0">
+                    <div class="text-value-lg">{{ stats.overdue }}</div>
+                    <div>Overdue</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Todos List -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <i class="cil-list"></i> 
+                    {% if filter == 'all' %}
+                        All Todos
+                    {% elseif filter == 'incomplete' %}
+                        Incomplete Todos
+                    {% elseif filter == 'completed' %}
+                        Completed Todos
+                    {% elseif filter == 'overdue' %}
+                        Overdue Todos
+                    {% elseif filter == 'high' %}
+                        High Priority Todos
+                    {% elseif filter == 'medium' %}
+                        Medium Priority Todos
+                    {% elseif filter == 'low' %}
+                        Low Priority Todos
+                    {% endif %}
+                    <div class="card-header-actions">
+                        <a href="?module=todoModule&controller=todo&action=create" class="btn btn-sm btn-success">
+                            <i class="cil-plus"></i> New Todo
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if todos is empty %}
+                        <div class="alert alert-info">
+                            <i class="cil-info"></i> No todos found. <a href="?module=todoModule&controller=todo&action=create">Create your first todo!</a>
+                        </div>
+                    {% else %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th width="50">Status</th>
+                                        <th>Title</th>
+                                        <th>Priority</th>
+                                        <th>Due Date</th>
+                                        <th>Created</th>
+                                        <th width="200">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for todo in todos %}
+                                        <tr class="{{ todo.completed ? 'table-secondary' : '' }}">
+                                            <td>
+                                                {% if todo.completed %}
+                                                    <span class="badge badge-success">
+                                                        <i class="cil-check"></i>
+                                                    </span>
+                                                {% else %}
+                                                    <span class="badge badge-warning">
+                                                        <i class="cil-clock"></i>
+                                                    </span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <strong class="{{ todo.completed ? 'text-muted' : '' }}">
+                                                    {{ todo.title }}
+                                                </strong>
+                                                {% if todo.description %}
+                                                    <br>
+                                                    <small class="text-muted">{{ todo.description|slice(0, 80) }}{{ todo.description|length > 80 ? '...' : '' }}</small>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-{{ todo.priorityBadgeClass }}">
+                                                    {{ todo.priority|upper }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                {% if todo.dueDate %}
+                                                    {% if todo.overdue and not todo.completed %}
+                                                        <span class="text-danger">
+                                                            <i class="cil-warning"></i>
+                                                            {{ todo.dueDate|date('M d, Y') }}
+                                                        </span>
+                                                    {% else %}
+                                                        {{ todo.dueDate|date('M d, Y') }}
+                                                    {% endif %}
+                                                {% else %}
+                                                    <span class="text-muted">-</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <small class="text-muted">{{ todo.createdAt|date('M d, Y') }}</small>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <a href="?module=todoModule&controller=todo&action=toggle&id={{ todo.id }}" 
+                                                       class="btn btn-sm btn-{{ todo.completed ? 'warning' : 'success' }}"
+                                                       title="{{ todo.completed ? 'Mark incomplete' : 'Mark complete' }}">
+                                                        <i class="cil-{{ todo.completed ? 'reload' : 'check' }}"></i>
+                                                    </a>
+                                                    <a href="?module=todoModule&controller=todo&action=edit&id={{ todo.id }}" 
+                                                       class="btn btn-sm btn-primary"
+                                                       title="Edit">
+                                                        <i class="cil-pencil"></i>
+                                                    </a>
+                                                    <a href="?module=todoModule&controller=todo&action=delete&id={{ todo.id }}" 
+                                                       class="btn btn-sm btn-danger"
+                                                       onclick="return confirm('Are you sure you want to delete this todo?')"
+                                                       title="Delete">
+                                                        <i class="cil-trash"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
