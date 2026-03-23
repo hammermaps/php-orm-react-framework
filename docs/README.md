@@ -6,6 +6,7 @@ Diese Dokumentation bietet eine umfassende Übersicht über das PHP ORM React Fr
 
 ### Grundlagen
 - [Schnellstart-Anleitung](../QUICK_START.md)
+- [Installationsanleitung](../INSTALLATION.md)
 - [Installation und Konfiguration](#installation)
 - [Projektstruktur](#projektstruktur)
 
