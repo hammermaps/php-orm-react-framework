@@ -807,7 +807,7 @@ trait AbstractBaseTrait
     /**
      * @return ExtendedCacheItemPoolInterface
      */
-    private final function getModuleCacheService(): ExtendedCacheItemPoolInterface
+    private function getModuleCacheService(): ExtendedCacheItemPoolInterface
     {
         return $this->moduleCacheService;
     }

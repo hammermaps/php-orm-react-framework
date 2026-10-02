@@ -516,7 +516,7 @@ class NavigationHandler
      * @param array|int $accessRoleConstant
      * @return array|string
      */
-    private final function getRolesConvertedIntoReadableTerms($accessRoleConstant)
+    private function getRolesConvertedIntoReadableTerms($accessRoleConstant)
     {
         if (is_array($accessRoleConstant)) {
             $result = [];
