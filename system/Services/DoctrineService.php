@@ -41,17 +41,16 @@ use Helpers\FileHelper;
 use Helpers\StringHelper;
 use Interfaces\ServiceInterfaces\VendorExtensionServiceInterface;
 use Managers\ModuleManager;
+use Services\Doctrine\EntityManagerFactory;
 use Traits\ControllerTraits\AbstractBaseTrait;
 use Traits\ServiceTraits\VendorExtensionInitServiceTraits;
 use Traits\UtilTraits\InstantiationStaticsUtilTrait;
-use Webmasters\Doctrine\Bootstrap as WDB;
-use Webmasters\Doctrine\ORM\Util\OptionsCollection;
 
 /**
  * Class DoctrineService
  * @package Services
  */
-class DoctrineService extends WDB implements VendorExtensionServiceInterface
+class DoctrineService implements VendorExtensionServiceInterface
 {
     use InstantiationStaticsUtilTrait;
     use VendorExtensionInitServiceTraits;
@@ -75,6 +74,21 @@ class DoctrineService extends WDB implements VendorExtensionServiceInterface
      * @var self
      */
     private self $systemDoctrineService;
+
+    /**
+     * @var EntityManager|null
+     */
+    private ?EntityManager $entityManager = null;
+
+    /**
+     * @var array
+     */
+    private array $applicationOptions = [];
+
+    /**
+     * @var array
+     */
+    private array $connectionOptions = [];
 
     /**
      * @noinspection PhpMissingParentConstructorInspection
@@ -147,6 +161,27 @@ class DoctrineService extends WDB implements VendorExtensionServiceInterface
     }
 
     /**
+     * @param string $name
+     * @param mixed|null $default
+     * @return mixed
+     */
+    public final function getOption(string $name, $default = null)
+    {
+        $keys = explode(".", $name);
+        $value = $this->applicationOptions;
+
+        foreach ($keys as $key) {
+            if (is_array($value) && array_key_exists($key, $value)) {
+                $value = $value[$key];
+            } else {
+                return $default;
+            }
+        }
+
+        return $value;
+    }
+
+    /**
      * @param $repositoryName
      * @param null $connectionOption
      * @return EntityRepository
@@ -174,10 +209,18 @@ class DoctrineService extends WDB implements VendorExtensionServiceInterface
             $this->setConnectionOptions($connectionOptions);
         }
 
-        /**
-         * @var $em EntityManager
-         */
-        $em = parent::getEm();
+        if (is_null($this->entityManager)) {
+            try {
+                $this->entityManager = EntityManagerFactory::create(
+                    $this->applicationOptions,
+                    $this->connectionOptions
+                );
+            } catch (Exception $e) {
+                throw new DoctrineException($e->getMessage(), $e->getCode(), $e);
+            }
+        }
+
+        $em = $this->entityManager;
 
         /**
          * @internal Hack for pdo_sqlite and Doctrine\DBAL\Exception\SyntaxErrorException while
@@ -248,7 +291,8 @@ class DoctrineService extends WDB implements VendorExtensionServiceInterface
      */
     protected final function setApplicationOptions($options)
     {
-        $this->applicationOptions = new OptionsCollection($options);
+        $this->applicationOptions = is_array($options) ? $options : (array)$options;
+        $this->entityManager = null;
     }
 
     /**
@@ -257,16 +301,18 @@ class DoctrineService extends WDB implements VendorExtensionServiceInterface
      */
     protected final function setConnectionOptions($options): void
     {
-        parent::setConnectionOptions($options);
-        $options = ArrayHelper::init($options);
+        $this->connectionOptions = is_array($options) ? $options : (array)$options;
+        $this->entityManager = null;
+
+        $optionsHelper = ArrayHelper::init($this->connectionOptions);
 
         /**
          * @internal Both for the system and for modules, if the default driver "pdo_sqlite"
          * is selected, the database is automatically created if it does not exist.
          * @see https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/tools.html#database-schema-generation
          */
-        if (strcasecmp($options->get("driver", false), "pdo_sqlite") == 0) {
-            $sqLitePath = $options->get("path", false);
+        if (strcasecmp($optionsHelper->get("driver", false), "pdo_sqlite") == 0) {
+            $sqLitePath = $optionsHelper->get("path", false);
             if ($sqLitePath && !FileHelper::init($sqLitePath)->isWritable()) {
                 try {
                     $em = $this->getEntityManager($this->currentConnectionOption);
@@ -283,6 +329,14 @@ class DoctrineService extends WDB implements VendorExtensionServiceInterface
                 }
             }
         }
+    }
+
+    /**
+     * Enable Doctrine exception/error mode.
+     */
+    public final function errorMode(): void
+    {
+        // No-op: Doctrine ORM throws exceptions by default.
     }
 
     /**

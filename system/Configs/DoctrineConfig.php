@@ -36,10 +36,10 @@ use Helpers\DeclarationHelper;
 use Helpers\DirHelper;
 use Helpers\FileHelper;
 use Interfaces\ConfigInterfaces\VendorExtensionConfigInterface;
+use Doctrine\ORM\EntityManager;
 use Services\DoctrineService;
 use Traits\ConfigTraits\VendorExtensionInitConfigTrait;
 use Traits\UtilTraits\InstantiationStaticsUtilTrait;
-use Webmasters\Doctrine\ORM\EntityManager;
 
 /**
  * Class DoctrineConfig
