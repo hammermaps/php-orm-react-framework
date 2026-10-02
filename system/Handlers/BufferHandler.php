@@ -72,9 +72,10 @@ class BufferHandler
      */
     public static function init(CacheHandler $cacheHandler, Logger $loggerService): BufferHandler
     {
-        if (is_null(self::$instance) || serialize($cacheHandler).serialize($loggerService) !== self::$instanceKey) {
+        $instanceKey = spl_object_hash($cacheHandler) . spl_object_hash($loggerService);
+        if (is_null(self::$instance) || $instanceKey !== self::$instanceKey) {
             self::$instance = new self($cacheHandler, $loggerService);
-            self::$instanceKey = serialize($cacheHandler).serialize($loggerService);
+            self::$instanceKey = $instanceKey;
         }
 
         return self::$instance;

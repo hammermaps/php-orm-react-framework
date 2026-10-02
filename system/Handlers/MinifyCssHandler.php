@@ -121,9 +121,9 @@ class MinifyCssHandler
      */
     public static final function init(ConfigValues $config): ?MinifyCssHandler
     {
-        if (is_null(self::$instance) || serialize($config) !== self::$instanceKey) {
+        if (is_null(self::$instance) || spl_object_hash($config) !== self::$instanceKey) {
             self::$instance = new self($config);
-            self::$instanceKey = serialize($config);
+            self::$instanceKey = spl_object_hash($config);
         }
 
         self::$instance->setDefaults();

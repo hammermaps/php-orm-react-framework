@@ -226,15 +226,7 @@ class CacheConfig implements VendorExtensionConfigInterface
                 } else {
                     $fallbackDriver = "files";
                     $fallbackConfig->setPath($cacheDir);
-                    $fallbackConfig->setDefaultChmod(0777);
                 }
-
-                /**
-                 * Set Fallback for Fallback to simple Memory (memstatic)
-                 */
-                $fallbackFallbackConfig = $this->getFallbackDriverConfig(false);
-                $fallbackConfig->setFallback($fallbackFallbackConfig["driverConfig"]["fallback"]);
-                $fallbackConfig->setFallbackConfig($fallbackFallbackConfig["driverConfig"]["fallbackConfig"]);
 
             } else {
                 /**
@@ -250,12 +242,10 @@ class CacheConfig implements VendorExtensionConfigInterface
             $fallbackConfig->setDefaultFileNameHashFunction("sha1");
             $fallbackConfig->setDefaultKeyHashFunction("sha1");
             $fallbackConfig->setItemDetailedDate(true);
-            $fallbackConfig->setCompressData(true);
 
             return [
                 "driverConfig" => [
-                    "fallback" => $fallbackDriver,
-                    "fallbackConfig" => $fallbackConfig
+                    "autoTmpFallback" => true
                 ]
             ];
         } catch (Exception $e) {

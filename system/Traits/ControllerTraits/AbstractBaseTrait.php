@@ -32,9 +32,7 @@ use Controllers\RestrictedController;
 use Controllers\SettingsController;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\EntityManager;
-use Gettext\GettextTranslator;
 use Gettext\Translations;
-use Gettext\Translator;
 use Handlers\CacheHandler;
 use Handlers\BufferHandler;
 use Handlers\CssHandler;
@@ -217,14 +215,14 @@ trait AbstractBaseTrait
     private LocaleService $localeService;
 
     /**
-     * @var Translator
+     * @var Translations
      */
-    private Translator $systemLocaleService;
+    private Translations $systemLocaleService;
 
     /**
-     * @var GettextTranslator
+     * @var Translations
      */
-    private GettextTranslator $moduleLocaleService;
+    private Translations $moduleLocaleService;
 
     /**
      * @var Logger
@@ -387,11 +385,11 @@ trait AbstractBaseTrait
     /**
      * For translations in Twig-Template-files use the function {% trans%},
      * which only contains the language files of the respective module.
-     * @return GettextTranslator
-     * @see LocaleService::getModuleTranslator()
+     * @return Translations
+     * @see LocaleService::getModuleTranslations()
      * @example $this->getModuleLocaleService()->setLanguage("de_DE")
      */
-    protected final function getModuleLocaleService(): GettextTranslator
+    protected final function getModuleLocaleService(): Translations
     {
         return $this->moduleLocaleService;
     }
@@ -772,10 +770,10 @@ trait AbstractBaseTrait
     /**
      * For translations in the controller, use the global functions __() and n__(),
      * each of which uses the language files of the system and the module.
-     * @return Translator
-     * @see LocaleService::getSystemTranslator()
+     * @return Translations
+     * @see LocaleService::getSystemTranslations()
      */
-    private function getSystemLocaleService(): Translator
+    private function getSystemLocaleService(): Translations
     {
         return $this->systemLocaleService;
     }
@@ -807,7 +805,7 @@ trait AbstractBaseTrait
     /**
      * @return ExtendedCacheItemPoolInterface
      */
-    private final function getModuleCacheService(): ExtendedCacheItemPoolInterface
+    private function getModuleCacheService(): ExtendedCacheItemPoolInterface
     {
         return $this->moduleCacheService;
     }

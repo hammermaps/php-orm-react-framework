@@ -123,8 +123,10 @@ class RequestHandler
         $raw_array = @json_decode($raw_input, true);
         $this->axios = ConfigFactory::fromArray(is_array($raw_array) ? $raw_array : []);
 
-        $this->requestUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
-        $this->baseUrl = ($split = explode("/index.php", $_SERVER["REQUEST_URI"])) > 1 ? $split[0] : $_SERVER["REQUEST_URI"];
+        $httpHost = $_SERVER["HTTP_HOST"] ?? "localhost";
+        $requestUri = $_SERVER["REQUEST_URI"] ?? "/";
+        $this->requestUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . $httpHost . $requestUri;
+        $this->baseUrl = ($split = explode("/index.php", $requestUri)) > 1 ? $split[0] : $requestUri;
 
         if ($this->query->get("module", null)) {
             $query = $this->query->get("module");

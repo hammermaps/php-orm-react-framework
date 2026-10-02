@@ -338,7 +338,7 @@ class SessionHandler
      * @return EntityManager
      * @see DoctrineService::getSystemDoctrineService()
      */
-    private final function getEm(): EntityManager
+    private function getEm(): EntityManager
     {
         return $this->em;
     }

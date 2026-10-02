@@ -28,7 +28,7 @@ $baseDir = __DIR__;
 /**
  * @var $classLoader Composer\Autoload\ClassLoader
  */
-$classLoader = require_once __DIR__ . '/vendor/autoload.php';
+$classLoader = require __DIR__ . '/vendor/autoload.php';
 
 use Handlers\AutoloadHandler;
 

@@ -27,9 +27,8 @@ namespace Services;
 
 
 use Exceptions\LocaleException;
-use Gettext\GettextTranslator;
+use Gettext\Loader\PoLoader;
 use Gettext\Translations;
-use Gettext\Translator;
 use Helpers\DeclarationHelper;
 use Helpers\FileHelper;
 use Interfaces\ServiceInterfaces\VendorExtensionServiceInterface;
@@ -52,14 +51,14 @@ class LocaleService implements VendorExtensionServiceInterface
     const DOMAIN = "messages";
 
     /**
-     * @var GettextTranslator
+     * @var Translations
      */
-    private GettextTranslator $modTranslator;
+    private Translations $modTranslations;
 
     /**
-     * @var Translator
+     * @var Translations
      */
-    private Translator $sysTranslator;
+    private Translations $sysTranslations;
 
     /**
      * @var string
@@ -74,7 +73,12 @@ class LocaleService implements VendorExtensionServiceInterface
     /**
      * @var string
      */
-    private $languageCode;
+    private string $languageCode;
+
+    /**
+     * @var PoLoader
+     */
+    private PoLoader $poLoader;
 
     /**
      * LocaleService constructor.
@@ -90,6 +94,8 @@ class LocaleService implements VendorExtensionServiceInterface
         $baseDir = $config->get("base_dir");
         $this->languageCode = $config->get("language");
 
+        $this->poLoader = new PoLoader();
+
         $this->sysLocaleDir = sprintf("%s/locale", $baseDir);
         $this->modLocaleDir = sprintf("%s/locale", $moduleManager->getModuleBaseDir());
         if(!FileHelper::init($this->modLocaleDir)->isReadable()){
@@ -97,42 +103,99 @@ class LocaleService implements VendorExtensionServiceInterface
         }
 
         /**
-         * @see LocaleService::getModuleTranslator()
+         * @see LocaleService::getModuleTranslations()
          * Module translation
          */
-        $this->modTranslator = new GettextTranslator();
-        $this->modTranslator->setLanguage($this->getLanguageCode());
-        $this->modTranslator->loadDomain(self::DOMAIN, $this->modLocaleDir);
-        $this->modTranslator->register();
+        $this->modTranslations = $this->loadModuleTranslations($this->getLanguageCode());
 
         /**
-         * @see LocaleService::getSystemTranslator()
+         * @see LocaleService::getSystemTranslations()
          * System translation
          */
-        $this->sysTranslator = new Translator();
-        $this->sysTranslator->loadTranslations($this->getTranslations($this->getLanguageCode()));
-        $this->sysTranslator->register();
+        $this->sysTranslations = $this->getTranslations($this->getLanguageCode());
+
+        $this->registerTranslationFunctions();
+    }
+
+    /**
+     * Register global helper functions for translations.
+     */
+    private function registerTranslationFunctions(): void
+    {
+        if (!function_exists('__')) {
+            function __(string $original): string
+            {
+                return LocaleService::translate($original);
+            }
+        }
+
+        if (!function_exists('n__')) {
+            function n__(string $original, string $plural, int $value): string
+            {
+                return LocaleService::translatePlural($original, $plural, $value);
+            }
+        }
+    }
+
+    /**
+     * Translates a singular message using the merged system and module translations.
+     *
+     * @param string $original
+     * @return string
+     */
+    public static function translate(string $original): string
+    {
+        $translations = self::$instance instanceof self
+            ? self::$instance->sysTranslations
+            : Translations::create();
+
+        $translation = $translations->find(null, $original);
+
+        return $translation ? $translation->getTranslation() : $original;
+    }
+
+    /**
+     * Translates a plural message using the merged system and module translations.
+     *
+     * @param string $original
+     * @param string $plural
+     * @param int $value
+     * @return string
+     */
+    public static function translatePlural(string $original, string $plural, int $value): string
+    {
+        $translations = self::$instance instanceof self
+            ? self::$instance->sysTranslations
+            : Translations::create();
+
+        $translation = $translations->find(null, $original);
+
+        if (!$translation || $translation->getPlural() === null) {
+            return $value === 1 ? $original : $plural;
+        }
+
+        return $translation->getPluralTranslation($value - 1) ?? ($value === 1 ? $original : $plural);
     }
 
     /**
      * Contains the global functions for the Twig extension il8n for translation in template files.
      * For translation in twig files with {% trans %} text {% endtrans %}.
-     * Important: Here only language files of the current module are accessed!
-     * @return GettextTranslator
+     * Important: Here only language files of the respective module are accessed!
+     * @return Translations
      */
-    public final function getModuleTranslator(): GettextTranslator
+    public final function getModuleTranslations(): Translations
     {
-        return $this->modTranslator;
+        return $this->modTranslations;
     }
 
     /**
      * Contains the global function __() for translations.
      * Important: Here files of the current module and the system are accessed!
-     * @return Translator
+     * @return Translations
      */
-    public final function getSystemTranslator(): Translator
+    public final function getSystemTranslations(): Translations
     {
-        return $this->sysTranslator;
+        return $this->sysTranslations;
     }
 
     /**
@@ -140,40 +203,41 @@ class LocaleService implements VendorExtensionServiceInterface
      */
     public final function setLanguage(string $localeCode): void
     {
-        $this->modTranslator->setLanguage($localeCode);
-        $this->sysTranslator->loadTranslations($this->getTranslations($localeCode));
+        $this->languageCode = $localeCode;
+        $this->modTranslations = $this->loadModuleTranslations($localeCode);
+        $this->sysTranslations = $this->getTranslations($localeCode);
     }
 
     /**
      * @param string $localeCode
      * @return Translations
      */
-    private function getSystemTranslations(string $localeCode): Translations
+    private function getSystemTranslationsByLocale(string $localeCode): Translations
     {
         $poFile = sprintf("%s/%s/LC_%s/%s.po", $this->sysLocaleDir,
             $localeCode, strtoupper(self::DOMAIN), self::DOMAIN);
 
         if(!FileHelper::init($poFile)->isReadable()){
-            return new Translations([]);
+            return Translations::create(self::DOMAIN, $localeCode);
         }
 
-        return Translations::fromPoFile($poFile);
+        return $this->poLoader->loadFile($poFile);
     }
 
     /**
      * @param string $localeCode
      * @return Translations
      */
-    private function getModuleTranslations(string $localeCode): Translations
+    private function loadModuleTranslations(string $localeCode): Translations
     {
         $poFile = sprintf("%s/%s/LC_%s/%s.po", $this->modLocaleDir,
             $localeCode, strtoupper(self::DOMAIN), self::DOMAIN);
 
         if(!FileHelper::init($poFile)->isReadable()){
-            return new Translations([]);
+            return Translations::create(self::DOMAIN, $localeCode);
         }
 
-        return Translations::fromPoFile($poFile);
+        return $this->poLoader->loadFile($poFile);
     }
 
     /**
@@ -183,7 +247,7 @@ class LocaleService implements VendorExtensionServiceInterface
     public function getTranslations(?string $localeCode = null): Translations
     {
         $localeCode = is_null($localeCode) ? $this->getLanguageCode() : $localeCode;
-        return $this->getSystemTranslations($localeCode)->mergeWith($this->getModuleTranslations($localeCode));
+        return $this->getSystemTranslationsByLocale($localeCode)->mergeWith($this->loadModuleTranslations($localeCode));
     }
 
     /**

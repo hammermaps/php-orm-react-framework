@@ -36,7 +36,7 @@ use Traits\UtilTraits\InstantiationStaticsUtilTrait;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Twig\TwigFunction;
-use Twig_Extensions_Extension_I18n;
+use jblond\TwigTrans\Translation;
 
 /**
  * Class TemplateService
@@ -90,7 +90,7 @@ class TemplateService implements VendorExtensionServiceInterface
 
         $envOptions = $config->get("template_options", []);
         $this->environment = new Environment($this->loader, $envOptions);
-        $this->environment->addExtension(new Twig_Extensions_Extension_I18n());
+        $this->environment->addExtension(new Translation());
 
         $portalOptions = $config->get("portal_options", []);
 
