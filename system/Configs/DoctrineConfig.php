@@ -28,13 +28,14 @@ namespace Configs;
 
 use Configula\ConfigFactory;
 use Configula\ConfigValues;
-use Doctrine\Common\Cache\Psr6\CacheAdapter;
+use Doctrine\Common\Cache\Psr6\DoctrineProvider;
 use Doctrine\ORM\EntityManager;
 use Exceptions\DoctrineException;
 use Helpers\DeclarationHelper;
 use Helpers\DirHelper;
 use Helpers\FileHelper;
 use Interfaces\ConfigInterfaces\VendorExtensionConfigInterface;
+use Psr\Cache\CacheItemPoolInterface;
 use Services\DoctrineService;
 use Symfony\Component\Cache\Adapter\ApcuAdapter;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
@@ -200,7 +201,7 @@ class DoctrineConfig implements VendorExtensionConfigInterface
             }
         }
 
-        $cacheDriver = CacheAdapter::wrap($psr6Cache);
+        $cacheDriver = DoctrineProvider::wrap($psr6Cache);
 
         return [
             /**

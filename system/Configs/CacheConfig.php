@@ -250,7 +250,6 @@ class CacheConfig implements VendorExtensionConfigInterface
             $fallbackConfig->setDefaultFileNameHashFunction("sha1");
             $fallbackConfig->setDefaultKeyHashFunction("sha1");
             $fallbackConfig->setItemDetailedDate(true);
-            $fallbackConfig->setCompressData(true);
 
             return [
                 "driverConfig" => [
