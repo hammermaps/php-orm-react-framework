@@ -106,9 +106,10 @@ class DefaultConfig implements ApplicationConfigInterface
      */
     public static final function init(ModuleManager $moduleManager): DefaultConfig
     {
-        if (is_null(self::$instance) || serialize($moduleManager) !== self::$instanceKey) {
+        $instanceKey = spl_object_hash($moduleManager);
+        if (is_null(self::$instance) || $instanceKey !== self::$instanceKey) {
             self::$instance = new self($moduleManager);
-            self::$instanceKey = serialize($moduleManager);
+            self::$instanceKey = $instanceKey;
         }
 
         return self::$instance;

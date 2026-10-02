@@ -60,9 +60,10 @@ trait VendorExtensionInitConfigTrait
      */
     public static function init(DefaultConfig $defaultConfig): ConfigValues
     {
-        if (is_null(self::$instance) || serialize($defaultConfig) !== self::$instanceKey) {
+        $instanceKey = spl_object_hash($defaultConfig);
+        if (is_null(self::$instance) || $instanceKey !== self::$instanceKey) {
             self::$instance = new self($defaultConfig);
-            self::$instanceKey = serialize($defaultConfig);
+            self::$instanceKey = $instanceKey;
         }
 
         return self::$instance->configValues;

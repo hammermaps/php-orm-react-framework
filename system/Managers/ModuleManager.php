@@ -180,9 +180,10 @@ class ModuleManager
      */
     public static final function init(AbstractBase $controllerInstance): ?ModuleManager
     {
-        if (is_null(self::$instance) || serialize($controllerInstance) !== self::$instanceKey) {
+        $instanceKey = spl_object_hash($controllerInstance);
+        if (is_null(self::$instance) || $instanceKey !== self::$instanceKey) {
             self::$instance = new self($controllerInstance);
-            self::$instanceKey = serialize($controllerInstance);
+            self::$instanceKey = $instanceKey;
         }
 
         return self::$instance;
