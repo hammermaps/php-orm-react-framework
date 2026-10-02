@@ -44,7 +44,8 @@
         "psr-4": {
             "Traits\\": "./system/Traits/",
             "Interfaces\\": "./system/Interfaces/",
-            "Services\\Doctrine\\": "./system/Doctrine/"
+            "Services\\Doctrine\\": "./system/Doctrine/",
+            "jblond\\TwigTrans\\": "./system/ThirdParty/TwigTrans/"
         }
     },
     "autoload-dev": {

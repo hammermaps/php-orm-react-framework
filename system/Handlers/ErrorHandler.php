@@ -117,10 +117,8 @@ class ErrorHandler
                 });
             });
         } else {
-            $errorTpl = sprintf("%/templates/Handlers/errors/whoops.php", $baseDir);
             $plainTextHandler = new PlainTextHandler();
             $plainTextHandler->addTraceToOutput(true);
-            $plainTextHandler->setTemplate($errorTpl);
 
             if ($this->logger instanceof Logger) {
                 $plainTextHandler->setLogger($this->logger);
@@ -145,9 +143,10 @@ class ErrorHandler
      */
     public static final function init(ConfigValues $config = null, Logger $logger = null): ?ErrorHandler
     {
-        if (is_null(self::$instance) || serialize($config) . serialize($logger) !== self::$instanceKey) {
+        $instanceKey = (is_null($config) ? '' : spl_object_hash($config)) . (is_null($logger) ? '' : spl_object_hash($logger));
+        if (is_null(self::$instance) || $instanceKey !== self::$instanceKey) {
             self::$instance = new self($config, $logger);
-            self::$instanceKey = serialize($config) . serialize($logger);
+            self::$instanceKey = $instanceKey;
         }
 
         return self::$instance;

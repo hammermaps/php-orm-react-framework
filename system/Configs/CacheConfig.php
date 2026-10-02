@@ -226,7 +226,6 @@ class CacheConfig implements VendorExtensionConfigInterface
                 } else {
                     $fallbackDriver = "files";
                     $fallbackConfig->setPath($cacheDir);
-                    $fallbackConfig->setDefaultChmod(0777);
                 }
 
             } else {
@@ -246,7 +245,7 @@ class CacheConfig implements VendorExtensionConfigInterface
 
             return [
                 "driverConfig" => [
-                    "fallback" => $fallbackDriver
+                    "autoTmpFallback" => true
                 ]
             ];
         } catch (Exception $e) {

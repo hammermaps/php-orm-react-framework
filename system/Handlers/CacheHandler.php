@@ -64,9 +64,10 @@ class CacheHandler
      */
     public final static function init(ExtendedCacheItemPoolInterface $extendedCacheItemPool): ?CacheHandler
     {
-        if (is_null(self::$instance) || serialize($extendedCacheItemPool) !== self::$instanceKey) {
+        $instanceKey = spl_object_hash($extendedCacheItemPool);
+        if (is_null(self::$instance) || $instanceKey !== self::$instanceKey) {
             self::$instance = new self($extendedCacheItemPool);
-            self::$instanceKey = serialize($extendedCacheItemPool);
+            self::$instanceKey = $instanceKey;
         }
 
         return self::$instance;

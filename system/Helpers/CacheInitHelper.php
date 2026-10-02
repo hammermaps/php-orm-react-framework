@@ -115,27 +115,13 @@ class CacheInitHelper
         }
 
         /**
-         * Hack for triggered errors on Fallback
+         * Init cache instance
          */
-        $errorReportingLevel = error_reporting();
-        error_reporting(E_USER_ERROR);
-
-        try {
-
-            $this->cacheInstance = CacheManager::getInstance(
-                $defaultCacheDriverName,
-                $defaultCacheConfiguration,
-                $instanceId
-            );
-
-        } catch (Exception $e) {
-
-            $this->cacheInstance = CacheManager::getInstance(
-                $defaultCacheConfiguration->getFallback(),
-                $defaultCacheConfiguration->getFallbackConfig(),
-                $instanceId
-            );
-        }
+        $this->cacheInstance = CacheManager::getInstance(
+            $defaultCacheDriverName,
+            $defaultCacheConfiguration,
+            $instanceId
+        );
 
         $this->hasFallback = !(strcasecmp(
                 $this->cacheInstance->getDriverName(),
@@ -143,11 +129,6 @@ class CacheInitHelper
                     ConfigValues::NOT_SET)
             ) === 0
         );
-
-        /**
-         * Reset reporting level
-         */
-        error_reporting($errorReportingLevel);
     }
 
     /**
@@ -163,9 +144,10 @@ class CacheInitHelper
      */
     public static final function init(ConfigValues $config, ?string $instanceId = null): ?CacheInitHelper
     {
-        if (is_null(self::$instance) || serialize($config).serialize($instanceId) !== self::$instanceKey) {
+        $instanceKey = spl_object_hash($config) . (string)$instanceId;
+        if (is_null(self::$instance) || $instanceKey !== self::$instanceKey) {
             self::$instance = new self($config, $instanceId);
-            self::$instanceKey = serialize($config).serialize($instanceId);
+            self::$instanceKey = $instanceKey;
         }
 
         return self::$instance;
