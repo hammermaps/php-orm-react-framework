@@ -230,7 +230,7 @@ class DoctrineService implements VendorExtensionServiceInterface
          * @see http://www.alberton.info/dbms_charset_settings_explained.html
          * @deprecated
          */
-        if (strcasecmp($em->getConnection()->getDriver()->getName(), "pdo_sqlite") == 0
+        if ($em->getConnection()->getDriver() instanceof \Doctrine\DBAL\Driver\PDO\SQLite\Driver
             && $em->getEventManager()->hasListeners(Events::postConnect)) {
             $this->removeEventListener($em, Events::postConnect, MysqlSessionInit::class);
         }
