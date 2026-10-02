@@ -54,7 +54,7 @@ class DirHelper
     private function __construct(string $dir, ?string $exceptionClass = null)
     {
         $this->dir = $dir;
-        $this->exceptionClass = class_exists($exceptionClass) ? $exceptionClass : null;
+        $this->exceptionClass = !is_null($exceptionClass) && class_exists($exceptionClass) ? $exceptionClass : null;
     }
 
     /**

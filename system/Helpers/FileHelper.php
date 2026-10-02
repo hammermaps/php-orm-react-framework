@@ -56,7 +56,7 @@ class FileHelper
     {
         $this->file = $file;
         $this->fileType = is_dir($this->file) ? "directory" : "file";
-        $this->exceptionClass = class_exists($exceptionClass) ? $exceptionClass : null;
+        $this->exceptionClass = !is_null($exceptionClass) && class_exists($exceptionClass) ? $exceptionClass : null;
     }
 
     /**
