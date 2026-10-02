@@ -138,8 +138,8 @@ abstract class AbstractBase
          * @see AbstractBaseTrait::getModuleLocaleService()
          */
         $this->localeService = $this->getServiceManager()->getLocaleService(); // !Only available for system
-        $this->systemLocaleService = $this->getLocaleService()->getSystemTranslator(); // !Only available for system
-        $this->moduleLocaleService = $this->getLocaleService()->getModuleTranslator(); // Available in modules
+        $this->systemLocaleService = $this->getLocaleService()->getSystemTranslations(); // !Only available for system
+        $this->moduleLocaleService = $this->getLocaleService()->getModuleTranslations(); // Available in modules
 
         /**
          * Logger service
