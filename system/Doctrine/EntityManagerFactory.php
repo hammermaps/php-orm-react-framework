@@ -29,11 +29,10 @@ use Doctrine\Common\EventManager;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\ORM\ORMSetup;
-use Doctrine\ORM\Tools\Setup;
 use Exception;
 use Gedmo\DoctrineExtensions;
+use Gedmo\Timestampable\TimestampableListener;
 
 /**
  * Factory for creating Doctrine EntityManager instances.
@@ -123,5 +122,6 @@ final class EntityManagerFactory
     private static function registerGedmoExtensions(EventManager $eventManager): void
     {
         DoctrineExtensions::registerAnnotations();
+        $eventManager->addEventSubscriber(new TimestampableListener());
     }
 }
