@@ -6,15 +6,35 @@ This document provides an overview of all documentation and examples created for
 
 In response to the request "bewerte diesen Code, erstelle Beispiele zur Verwendung" (evaluate this code, create usage examples), comprehensive documentation has been created covering:
 
-1. ✅ **Code Evaluation** - In-depth analysis of the framework
-2. ✅ **Usage Examples** - Comprehensive code examples
-3. ✅ **Working Module** - Complete TodoModule as practical example
-4. ✅ **Quick Start Guide** - Get started quickly
-5. ✅ **German Summary** - Evaluation summary in German
+1. ✅ **Installation Guide** - Step-by-step installation instructions
+2. ✅ **Code Evaluation** - In-depth analysis of the framework
+3. ✅ **Usage Examples** - Comprehensive code examples
+4. ✅ **Working Module** - Complete TodoModule as practical example
+5. ✅ **Quick Start Guide** - Get started quickly
+6. ✅ **German Summary** - Evaluation summary in German
 
 ## 📚 Documentation Files
 
-### 1. EVALUATION.md (English)
+### 1. INSTALLATION.md (English)
+**Full Path**: `INSTALLATION.md`
+
+**Contents**:
+- Prerequisites checklist (PHP, Composer, Node.js, Yarn, Database)
+- Create a new project via Composer
+- Install PHP and JavaScript dependencies
+- Configure the application (`default-config.php`, `portal-config.php`)
+- Database setup (SQLite, MySQL/MariaDB, Doctrine schema tools)
+- Web server configuration (Apache, Nginx, PHP built-in server)
+- File permission setup
+- Verify the installation
+- Build assets for production
+- Troubleshooting guide
+
+**Best for**: First-time installation and server setup
+
+---
+
+### 2. EVALUATION.md (English)
 **Full Path**: `EVALUATION.md`
 
 **Contents**:
@@ -130,22 +150,27 @@ modules/TodoModule/
 
 ### For First-Time Users
 
-1. **Start here**: [QUICK_START.md](QUICK_START.md)
+1. **Install first**: [INSTALLATION.md](INSTALLATION.md)
+   - Full prerequisites and step-by-step setup
+   - Database and web server configuration
+   - Troubleshooting tips
+
+2. **Then quick-start**: [QUICK_START.md](QUICK_START.md)
    - Get the framework installed
    - Understand the basics
    - Run your first example
 
-2. **Then read**: [BEWERTUNG_DE.md](BEWERTUNG_DE.md) (if German) or [EVALUATION.md](EVALUATION.md) (if English)
+3. **Then read**: [BEWERTUNG_DE.md](BEWERTUNG_DE.md) (if German) or [EVALUATION.md](EVALUATION.md) (if English)
    - Understand what the framework can do
    - Learn about its strengths and limitations
    - See the big picture
 
-3. **Study the example**: [modules/TodoModule](modules/TodoModule/)
+4. **Study the example**: [modules/TodoModule](modules/TodoModule/)
    - See how everything works together
    - Copy the patterns for your own modules
    - Modify and experiment
 
-4. **Reference as needed**: [EXAMPLES.md](EXAMPLES.md)
+5. **Reference as needed**: [EXAMPLES.md](EXAMPLES.md)
    - Look up specific patterns
    - Find code snippets
    - Learn advanced techniques
@@ -226,6 +251,7 @@ After reading this documentation, you will understand:
 
 | Document | Language | Best For | Size |
 |----------|----------|----------|------|
+| [INSTALLATION.md](INSTALLATION.md) | English | Step-by-step installation | ~250 lines |
 | [EVALUATION.md](EVALUATION.md) | English | Comprehensive evaluation | ~10,300 lines |
 | [EXAMPLES.md](EXAMPLES.md) | English | Code examples | ~34,400 lines |
 | [QUICK_START.md](QUICK_START.md) | English | Quick start | ~8,400 lines |
@@ -260,6 +286,7 @@ Documentation Coverage:
 ## 🚀 Next Steps
 
 1. **Choose your starting point** based on your needs:
+   - First installation? → [INSTALLATION.md](INSTALLATION.md)
    - New to the framework? → [QUICK_START.md](QUICK_START.md)
    - Want to evaluate it? → [EVALUATION.md](EVALUATION.md) or [BEWERTUNG_DE.md](BEWERTUNG_DE.md)
    - Ready to code? → [modules/TodoModule](modules/TodoModule/)
@@ -280,13 +307,14 @@ This documentation package provides everything needed to:
 - ✅ Understand best practices
 - ✅ Make informed decisions about using the framework
 
-**Total Value**: Complete evaluation + Comprehensive examples + Working module + Quick start + German summary
+**Total Value**: Installation guide + Complete evaluation + Comprehensive examples + Working module + Quick start + German summary
 
 **Recommended Reading Order**:
-1. QUICK_START.md (15 minutes)
-2. EVALUATION.md or BEWERTUNG_DE.md (30 minutes)
-3. TodoModule/README.md (10 minutes)
-4. TodoModule source code study (30 minutes)
-5. EXAMPLES.md as reference (ongoing)
+1. INSTALLATION.md (10 minutes)
+2. QUICK_START.md (15 minutes)
+3. EVALUATION.md or BEWERTUNG_DE.md (30 minutes)
+4. TodoModule/README.md (10 minutes)
+5. TodoModule source code study (30 minutes)
+6. EXAMPLES.md as reference (ongoing)
 
 Happy coding! 🎉

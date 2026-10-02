@@ -10,6 +10,10 @@ Below you may find some useful links that lead to necessary documentations!
 
 ## Installation
 
+For a full step-by-step installation walkthrough please see **[INSTALLATION.md](INSTALLATION.md)**.
+
+Quick summary:
+
 To create a new Phorm RF project using Composer you can use the create-project command. Pass the package name, and the directory to create the project in. You can also provide a version as third argument, otherwise the latest version is used.
 
 ```composer create-project dwwe/php-orm-react-framework project-dir```
