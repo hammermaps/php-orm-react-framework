@@ -28,16 +28,17 @@ namespace Configs;
 
 use Configula\ConfigFactory;
 use Configula\ConfigValues;
-use Doctrine\Common\Cache\ApcuCache;
-use Doctrine\Common\Cache\ArrayCache;
-use Doctrine\Common\Cache\FilesystemCache;
+use Doctrine\Common\Cache\Psr6\CacheAdapter;
+use Doctrine\ORM\EntityManager;
 use Exceptions\DoctrineException;
 use Helpers\DeclarationHelper;
 use Helpers\DirHelper;
 use Helpers\FileHelper;
 use Interfaces\ConfigInterfaces\VendorExtensionConfigInterface;
-use Doctrine\ORM\EntityManager;
 use Services\DoctrineService;
+use Symfony\Component\Cache\Adapter\ApcuAdapter;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Traits\ConfigTraits\VendorExtensionInitConfigTrait;
 use Traits\UtilTraits\InstantiationStaticsUtilTrait;
 
@@ -181,15 +182,15 @@ class DoctrineConfig implements VendorExtensionConfigInterface
     {
         $isDebug = $this->config->get("debug_mode");
         $baseDir = $this->config->get("base_dir");
-        $cacheDriver = new ArrayCache();
+        $psr6Cache = new ArrayAdapter();
 
         if (!$isDebug) {
             if (DeclarationHelper::init("apcu", null, "apcu_add")->isDeclared()) {
-                $cacheDriver = new ApcuCache();
+                $psr6Cache = new ApcuAdapter();
             } else {
                 $filesystemCacheDir = sprintf("%s/data/cache/doctrine", $baseDir);
                 if (FileHelper::init($filesystemCacheDir)->isWritable(true)) {
-                    $cacheDriver = new FilesystemCache($filesystemCacheDir);
+                    $psr6Cache = new FilesystemAdapter('', 0, $filesystemCacheDir);
                 }
 
                 /**
@@ -198,6 +199,8 @@ class DoctrineConfig implements VendorExtensionConfigInterface
                 DirHelper::init($filesystemCacheDir)->addDirectoryProtection();
             }
         }
+
+        $cacheDriver = CacheAdapter::wrap($psr6Cache);
 
         return [
             /**
