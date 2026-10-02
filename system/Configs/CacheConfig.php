@@ -229,13 +229,6 @@ class CacheConfig implements VendorExtensionConfigInterface
                     $fallbackConfig->setDefaultChmod(0777);
                 }
 
-                /**
-                 * Set Fallback for Fallback to simple Memory (memstatic)
-                 */
-                $fallbackFallbackConfig = $this->getFallbackDriverConfig(false);
-                $fallbackConfig->setFallback($fallbackFallbackConfig["driverConfig"]["fallback"]);
-                $fallbackConfig->setFallbackConfig($fallbackFallbackConfig["driverConfig"]["fallbackConfig"]);
-
             } else {
                 /**
                  * Set Fallback to simple Memory
@@ -253,8 +246,7 @@ class CacheConfig implements VendorExtensionConfigInterface
 
             return [
                 "driverConfig" => [
-                    "fallback" => $fallbackDriver,
-                    "fallbackConfig" => $fallbackConfig
+                    "fallback" => $fallbackDriver
                 ]
             ];
         } catch (Exception $e) {
