@@ -28,7 +28,6 @@ namespace Configs;
 
 use Configula\ConfigFactory;
 use Configula\ConfigValues;
-use Doctrine\Common\Cache\Psr6\DoctrineProvider;
 use Doctrine\ORM\EntityManager;
 use Exceptions\DoctrineException;
 use Helpers\DeclarationHelper;
@@ -201,7 +200,7 @@ class DoctrineConfig implements VendorExtensionConfigInterface
             }
         }
 
-        $cacheDriver = DoctrineProvider::wrap($psr6Cache);
+        $cacheDriver = $psr6Cache;
 
         return [
             /**
